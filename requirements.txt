@@ -2,3 +2,6 @@ praw
 pandas
 requests
 bs4
+pyfin_sentiment
+numpy
+schedule

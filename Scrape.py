@@ -1,7 +1,6 @@
 import praw
 import pandas as pd
 import re
-import getTickers
 
 reddit = praw.Reddit(
     client_id='VrIL6ECM-p_kqqynXK6Ucw',
@@ -23,7 +22,7 @@ ticker_pattern = re.compile(r'\b[A-Z]{1,5}\b')
 
 new_posts = []
 
-for post in subreddit.new(limit=500):  # Fetch up to 100 posts and
+for post in subreddit.top(limit=500):  # Fetch up to 100 posts and
     if post.id not in processed_ids:
         # Extract tickers from title and content
         tickers_in_title = ticker_pattern.findall(post.title)
