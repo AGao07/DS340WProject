@@ -1,8 +1,13 @@
 import praw
 import pandas as pd
-import re
 import schedule
 import time
+import json
+import logging
+from pathlib import Path
+import getTickers
+
+logging.basicConfig(level=logging.INFO)
 
 reddit = praw.Reddit(
     client_id='VrIL6ECM-p_kqqynXK6Ucw',
@@ -10,33 +15,42 @@ reddit = praw.Reddit(
     user_agent='Education_NLP by /u/TakafumiKusonori'
 )
 
-processed_file = "processed_posts.txt"
-try:
+processed_file = Path("processed_posts.txt")
+processed_ids = set()
+
+if processed_file.exists():
     with open(processed_file, "r") as file:
         processed_ids = set(line.strip() for line in file)
-except FileNotFoundError:
-    processed_ids = set()
 
 subreddits = "stocks+wallstreetbets+investing"
 subreddit = reddit.subreddit(subreddits)
+valid_tickers = set(getTickers.get_sp500_tickers())  # Fetch valid tickers
 
-ticker_pattern = re.compile(r'\b[A-Z]{1,5}\b')
+
+def extract_valid_tickers(text, valid_tickers):
+    words = text.split()
+    tickers = [word for word in words if word in valid_tickers]
+    return tickers
+
 
 def scrape_and_process_posts():
     new_posts = []
 
-    for post in subreddit.top(limit=500):
-        if post.id not in processed_ids:
-            tickers_in_title = ticker_pattern.findall(post.title)
-            tickers_in_content = ticker_pattern.findall(post.selftext)
-            tickers = list(set(tickers_in_title + tickers_in_content))
-            post_content_cleaned = post.selftext.replace("\n", " ")
+    try:
+        for post in subreddit.hot(limit=6000):
+            if post.id in processed_ids:
+                continue
+
+            tickers = list(set(extract_valid_tickers(post.title, valid_tickers) +
+                               extract_valid_tickers(post.selftext, valid_tickers)))
+            if not tickers:
+                continue
 
             new_posts.append({
                 "id": post.id,
                 "title": post.title,
                 "score": post.score,
-                "content": post_content_cleaned,
+                "content": post.selftext.replace("\n", " "),
                 "url": post.url,
                 "subreddit": post.subreddit.display_name,
                 "tickers": ", ".join(tickers)
@@ -44,17 +58,21 @@ def scrape_and_process_posts():
 
             processed_ids.add(post.id)
 
-    with open(processed_file, "a") as file:
-        for post in new_posts:
-            file.write(post["id"] + "\n")
+        with open(processed_file, "w") as file:
+            json.dump(list(processed_ids), file)
 
-    if new_posts:
-        df = pd.DataFrame(new_posts)
-        print("New posts processed. Saving to CSV...")
-        print(df)
-        df.to_csv("data/raw_data/reddit_finance_posts.csv", mode='a', header=False, index=False)
-    else:
-        print("No new posts found.")
+        if new_posts:
+            df = pd.DataFrame(new_posts)
+            df.to_csv("data/raw_data/reddit_finance_posts.csv", mode='a',
+                      header=not Path("data/raw_data/reddit_finance_posts.csv").exists(), index=False)
+            logging.info(f"{len(new_posts)} new posts processed and saved to CSV.")
+        else:
+            logging.info("No new posts found.")
+
+    except Exception as e:
+        logging.error(f"Error during scraping: {e}")
+
+
 schedule.every(1).hours.do(scrape_and_process_posts)
 
 while True:
