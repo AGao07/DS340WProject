@@ -8,3 +8,4 @@ schedule
 transformers
 torch
 yfinance
+statsmodels

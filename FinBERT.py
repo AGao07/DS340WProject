@@ -12,7 +12,7 @@ sentiment_labels = {0: "Bearish", 1: "Neutral", 2: "Bullish"}
 
 def batch_sentiment_analysis(texts):
     inputs = tokenizer(texts, return_tensors="pt", truncation=True, padding=True, max_length=512)
-    with torch.no_grad():  # No gradients needed for inference
+    with torch.no_grad():
         outputs = model(**inputs)
         predictions = torch.argmax(outputs.logits, dim=1)
         sentiments = [sentiment_labels[pred.item()] for pred in predictions]
