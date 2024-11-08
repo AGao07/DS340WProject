@@ -7,3 +7,4 @@ numpy
 schedule
 transformers
 torch
+yfinance
