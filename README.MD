@@ -19,3 +19,4 @@ There is a running count of downloaded post ids in processed_posts.txt, and it i
 Running Clean.py will only involve posts that specifically mention a stock, and make clean the formatting.
 
 After running both functions, there will be "reddit_finance_posts.csv" in data/raw_data and "reddit_finance_posts_cleaned.csv" in data/processed_data.
+

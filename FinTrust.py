@@ -12,8 +12,33 @@ pyFin = SentimentModel("small")
 df = pd.read_csv("data/processed_data/reddit_finance_posts_cleaned.csv")
 
 # Negation map from parent paper
-negation_map = {" more ": " less ", " less ": " more ", " positive ": " negative ", " increase ": " decrease "}
-
+negation_map = {
+        " more ": " less ", " less ": " more ", " positive ": " negative ", " increase ": " decrease ",
+        " yes ": " no ", " no ": " yes ", " unable ": " able ", " able ": " unable ",
+        " decrease ": " increase ", " sales ": " buy ", " sale ": " buy ", " buy ": " sale ",
+        " best ": " worst ", " worst ": " best ", " larger ": " smaller ", " smaller ": " larger ",
+        " large ": " small ", " small ": " large ", " good ": " bad ", " bad ": " good ",
+        " high ": " low ", " low ": " high ", " down ": " up ", " up ": " down ",
+        " dislike ": " like ", " like ": " dislike ", " right ": " wrong ", " wrong ": " right ",
+        " a lot of ": " few ", " many ": " few ", " few ": " many ", " little ": " much ",
+        " much ": " little ", " disbelieve ": " believe ", " believe ": " disbelieve ",
+        " better ": " worse ", " worse ": " better ", " revenue ": " expense ", " expense ": " revenue ",
+        " abandon ": " remain ", " remain ": " abandon ", " continuing ": " stopping ", " stopping ": " continuing ",
+        " continue ": " stop ", " stop ": " continue ", " approve ": " refuse ", " refuse ": " approve ",
+        " grew ": " decayed ", " decayed ": " grew ", " decay ": " grow ", " growth ": " decay ",
+        " grow ": " decay ", " improvement ": " degeneration ", " degeneration ": " improvement ",
+        " improve ": " degenerate ", " degenerate ": " improve ", " focus ": " ignore ", " ignore ": " focus ",
+        " major ": " minor ", " minor ": " major ", " strong ": " weak ", " weak ": " strong ",
+        " full ": " empty ", " empty ": " full ", " start ": " end ", " end ": " start ",
+        " progress ": " decline ", " decline ": " progress ", " earnings ": " cost ", " cost ": " earnings ",
+        " well ": " badly ", " badly ": " well ", " expect ": " dismiss ", " dismiss ": " expect ",
+        " over ": " below ", " below ": " over ", " back ": " forward ", " forward ": " back ",
+        " margin ": " loss ", " profit ": " loss ", " benefits ": " loss ", " income ": " loss ",
+        " loss ": " profit ", " benefit ": " harm ", " harm ": " benefit ", " slightly ": " completely ",
+        " completely ": " slightly ", " most ": " least ", " least ": " most ",
+        " add ": " decrease ", " change ": " unchange ", " opportunities ": " changes ", " opportunity ": " change ",
+        " within ": " without ", " without ": " with ", " with ": " without "
+    }
 def negate_text(text):
     for word, opposite in negation_map.items():
         text = text.replace(word, opposite)
