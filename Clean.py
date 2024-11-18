@@ -1,7 +1,6 @@
 import pandas as pd
 import getTickers
 
-# Get valid tickers from the S&P 500
 valid_tickers = getTickers.get_sp500_tickers()
 
 
