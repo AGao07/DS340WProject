@@ -39,6 +39,7 @@ negation_map = {
         " add ": " decrease ", " change ": " unchange ", " opportunities ": " changes ", " opportunity ": " change ",
         " within ": " without ", " without ": " with ", " with ": " without "
     }
+
 def negate_text(text):
     for word, opposite in negation_map.items():
         text = text.replace(word, opposite)
@@ -55,7 +56,7 @@ def transitive_text(text, ticker, top_company):
     return text.replace(ticker, top_company)
 
 def get_finbert_sentiment(text):
-    sentiment_labels = {0: "Bearish", 1: "Neutral", 2: "Bullish"}
+    sentiment_labels = {0: "Bearish", 1: "Neutral", 2: "Bullish"} # Model specific encoding
     inputs = finbert_tokenizer(text, return_tensors="pt", truncation=True, padding=True, max_length=512)
     with torch.no_grad():
         outputs = finbert_model(**inputs)
@@ -64,7 +65,7 @@ def get_finbert_sentiment(text):
 
 def get_pyfin_sentiment(text):
     pred = pyFin.predict([text])[0]
-    sentiment_map = {1: "Bullish", 2: "Neutral", 3: "Bearish"}
+    sentiment_map = {1: "Bullish", 2: "Neutral", 3: "Bearish"} # Model specific encoding
     return sentiment_map.get(int(pred), "Unknown")
 
 

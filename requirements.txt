@@ -9,3 +9,4 @@ transformers
 torch
 yfinance
 statsmodels
+openai
