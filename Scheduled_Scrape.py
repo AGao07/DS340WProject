@@ -6,13 +6,17 @@ import json
 import logging
 from pathlib import Path
 import getTickers
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
 
 reddit = praw.Reddit(
-    client_id='VrIL6ECM-p_kqqynXK6Ucw',
-    client_secret='C-ICFTty213-mlbxk-5zELH1LhtaLQ',
-    user_agent='Education_NLP by /u/TakafumiKusonori'
+    client_id=os.getenv("PRAW_client_id"),
+    client_secret=os.getenv("PRAW_client_secret"),
+    user_agent=os.getenv("PRAW_user_agent")
 )
 
 processed_file = Path("processed_posts.txt")
