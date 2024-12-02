@@ -11,3 +11,4 @@ yfinance
 statsmodels
 openai
 python-dotenv
+ipykernel

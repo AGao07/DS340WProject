@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 
+#by hand
 def annotate_csv(input_csv, output_csv):
     input_df = pd.read_csv(input_csv)
     if not os.path.exists(output_csv):
